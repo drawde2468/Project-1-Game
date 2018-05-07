@@ -1,0 +1,7 @@
+#game-area{
+    border: 1px solid black;
+}
+
+p,h1,h2{
+    display: inline;
+}
