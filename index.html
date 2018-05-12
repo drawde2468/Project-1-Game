@@ -11,16 +11,22 @@
 </head>
 
 <body>
-    <div>
+    <div class="container">
         <div>
             <h1>Tile Slide</h1>
         </div>
-        <p>Time:
-            <span id="time">0</span>
-        </p>
-        <p>Moves:
-            <span id="moves">0</span>
-        </p>
+        <div>
+            <p>Time:
+                <span id="time">0</span>
+                Moves:
+                <span id="moves">0</span>
+            </p>
+        </div>
+        <div>
+            <input class="btn" id="easy" type="button" value="Easy (3x3)">
+            <input class="btn" id="med" type="button" value="Medium (4x4)">
+            <input class="btn" id="hard" type="button" value="Hard (5x5)">
+        </div>
         <div>
             <canvas id="game-area" width="800" height="600"></canvas>
         </div>
