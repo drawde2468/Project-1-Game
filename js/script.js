@@ -7,6 +7,7 @@ let tileHeight;
 let tilesArr = []; //array of objects containing position of x and position of y
 let shuffledArr = [];
 let selectedTile;
+let moves = -100;
 
 window.onload = function() {
   document.getElementById("easy").onclick = function() {
@@ -34,30 +35,41 @@ window.onload = function() {
 
 document.onkeydown = function(e) {
   executeMove(e.keyCode);
+  //   shuffleButton(e.keyCode);
 };
 
+function shuffleButton(keyCode) {
+  if (keyCode === 32) {
+    shuffleMove();
+  }
+}
+
 function executeMove(keyCode) {
+  if (keyCode === 37 || keyCode === 39 || keyCode === 38 || keyCode === 40) {
+    countMoves();
+  }
+
   if (keyCode === 37) {
     //left 37
     if (selectedTile % difficulty === 0) {
       swapArr(shuffledArr, selectedTile, selectedTile + (difficulty - 1));
       selectedTile = selectedTile + (difficulty - 1);
-      drawCanvasTest();
+      drawGameCanvas();
     } else {
       swapArr(shuffledArr, selectedTile, selectedTile - 1); //calling the function that swaps the index of the selected tile
       selectedTile = selectedTile - 1;
-      drawCanvasTest();
+      drawGameCanvas();
     }
   } else if (keyCode === 39) {
     //right 39
     if ((selectedTile + 1) % difficulty === 0) {
       swapArr(shuffledArr, selectedTile, selectedTile - (difficulty - 1));
       selectedTile = selectedTile - (difficulty - 1);
-      drawCanvasTest();
+      drawGameCanvas();
     } else {
       swapArr(shuffledArr, selectedTile, selectedTile + 1); //calling the function that swaps the index of the selected tile
       selectedTile = selectedTile + 1;
-      drawCanvasTest();
+      drawGameCanvas();
     }
   } else if (keyCode === 38) {
     //up 38
@@ -68,11 +80,11 @@ function executeMove(keyCode) {
         selectedTile + difficulty * (difficulty - 1)
       );
       selectedTile = selectedTile + difficulty * (difficulty - 1);
-      drawCanvasTest();
+      drawGameCanvas();
     } else {
       swapArr(shuffledArr, selectedTile, selectedTile - difficulty); //calling the function that swaps the index of the selected tile
       selectedTile = selectedTile - difficulty;
-      drawCanvasTest();
+      drawGameCanvas();
     }
   } else if (keyCode === 40) {
     //down 40
@@ -83,11 +95,11 @@ function executeMove(keyCode) {
         selectedTile - difficulty * (difficulty - 1)
       );
       selectedTile = selectedTile - difficulty * (difficulty - 1);
-      drawCanvasTest();
+      drawGameCanvas();
     } else {
       swapArr(shuffledArr, selectedTile, selectedTile + difficulty); //calling the function that swaps the index of the selected tile
       selectedTile = selectedTile + difficulty;
-      drawCanvasTest();
+      drawGameCanvas();
     }
   }
 }
@@ -102,7 +114,7 @@ function createImg() {
     //calls function to draw the initial canvas
     drawCanvas();
     //calls function to draw the test canvas that is created using the tilesArr.
-    drawCanvasTest();
+    drawGameCanvas();
   };
 }
 
@@ -150,8 +162,8 @@ function drawCanvas() {
 
       //draws stroke line around tiles
       ctx.strokeRect(currentX, currentY, tileWidth, tileHeight);
-      console.log("CURRENT X", currentX);
-      console.log("CURRENT Y", currentY);
+      //   console.log("CURRENT X", currentX);
+      //   console.log("CURRENT Y", currentY);
       //moving along the x axis
       currentX += tileWidth;
       //this if statement ends the increase of the x axis and moves the loop into the next y axis pos.
@@ -166,8 +178,8 @@ function drawCanvas() {
   // console.log(tilesArr); //for testing
 }
 
-function drawCanvasTest() {
-  let canvas = document.getElementById("game-test");
+function drawGameCanvas() {
+  let canvas = document.getElementById("play-area");
   let ctx = canvas.getContext("2d");
 
   for (i = 0; i < difficulty * difficulty; i++) {
@@ -205,6 +217,9 @@ function drawCanvasTest() {
     tileWidth,
     tileHeight
   );
+  if (checkWinTest() === true) {
+    console.log("you win");
+  }
   // console.log(shuffledArr); //for testing
 }
 
@@ -217,8 +232,37 @@ function swapArr(arr, index1, index2) {
 }
 
 function shuffleMove() {
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 100; i++) {
     x = Math.floor(Math.random() * 4) + 37;
     window.executeMove(x);
   }
+}
+
+function checkWinTest() {
+  let win = false;
+  let winCounter = 0;
+
+  for (i = 0; i < tilesArr.length; i++) {
+    if (
+      tilesArr[i].positionX === shuffledArr[i].positionX &&
+      tilesArr[i].positionY === shuffledArr[i].positionY
+    ) {
+      winCounter++;
+    }
+  }
+  if (winCounter === tilesArr.length) {
+    win = true;
+  }
+  return win;
+}
+
+function countMoves() {
+    x = document.getElementById("moves");
+    moves++;
+    x.innerText = moves;
+    console.log(moves);
+}
+
+function resetGame(){
+
 }
