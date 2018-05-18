@@ -11,12 +11,15 @@ let gridImage;
 let shuffledImg;
 let shuffleButton;
 let imageArr;
+let firstLoad = true;
 
 window.onload = function() {
   gridImage = document.getElementById("original-img");
   shuffledImg = document.getElementById("play-area");
   shuffleButton = document.getElementById("start");
+  instructions();
   randomImgGenerator();
+  showHideBtn();
 
   document.onkeydown = function(e) {
     if (gridImage.style.display === "none") {
@@ -41,6 +44,12 @@ window.onload = function() {
   };
   document.getElementById("start").onclick = function() {
     toggleCanvas();
+  };
+  document.getElementById("reset").onclick = function() {
+    shuffleButton.value = "Start";
+    gridImage.style.display = "inline";
+    shuffledImg.style.display = "none";
+    window.onload();
   };
 };
 
@@ -179,7 +188,7 @@ function drawCanvas() {
 
   ctx.beginPath();
   ctx.rect(whiteX, whiteY, tileWidth, tileHeight);
-  ctx.fillStyle = "#e0e0ce";
+  ctx.fillStyle = "#ad343e";
   ctx.fill();
   ctx.strokeRect(whiteX, whiteY, tileWidth, tileHeight);
 
@@ -218,7 +227,7 @@ function drawGameCanvas() {
     tileWidth,
     tileHeight
   );
-  ctx.fillStyle = "#e0e0ce";
+  ctx.fillStyle = "#ad343e";
   ctx.fill();
   ctx.strokeRect(
     tilesArr[selectedTile].positionX,
@@ -277,6 +286,7 @@ function resetGame() {
   tilesArr = [];
   shuffledArr = [];
   selectedTile = difficulty * difficulty - 1;
+  showHideBtn();
 }
 
 function toggleCanvas() {
@@ -291,38 +301,97 @@ function toggleCanvas() {
   }
 }
 
-// function toggleBtn(){
-//     if (document.getElementById("mode").style.display ==="block"){
-//         document.getElementById("start").style.display = "none";
-//     }
-//     else{
-//         document.getElementById("start").style.display = "inline";
-//         document.getElementById("mode").style.display ="none";
-//     } 
-// }
+function showHideBtn() {
+  if (document.getElementById("in-game-btn").style.display === "none") {
+    document.getElementById("mode").style.display = "none";
+    document.getElementById("in-game-btn").style.display = "block";
+  } else {
+    document.getElementById("mode").style.display = "block";
+    document.getElementById("in-game-btn").style.display = "none";
+  }
+}
 
-function randomImgGenerator(){
-    imageArr = [
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Raigad_Fort_%28nature%29.jpg/800px-Raigad_Fort_%28nature%29.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Czo%C5%82o_Turbacza.jpg/800px-Czo%C5%82o_Turbacza.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/c/c6/BBGJapaneseHillPondGarden.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/2012-04-27_07-19-41-nature.jpg/800px-2012-04-27_07-19-41-nature.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/KHARKHARA_DAM_WATERFALL_01.jpg/800px-KHARKHARA_DAM_WATERFALL_01.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Iguana_de_Venezuela.jpg/800px-Iguana_de_Venezuela.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Australia_July_2008_%282687557669%29.jpg/800px-Australia_July_2008_%282687557669%29.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/0/0f/Natural-heritage-bhutan.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Cachoeira_no_Rio_Sucuri%C3%BA_-_Costa_Rica-MS_02.jpg/800px-Cachoeira_no_Rio_Sucuri%C3%BA_-_Costa_Rica-MS_02.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Crete_Senesi_Sunset_-_Saltafabbro%2C_Asciano%2C_Siena%2C_Italy_-_July_4%2C_2010_02.jpg/800px-Crete_Senesi_Sunset_-_Saltafabbro%2C_Asciano%2C_Siena%2C_Italy_-_July_4%2C_2010_02.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/8/89/Moneglia_%28GE%29%2C_Italy.JPG",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/%D8%B9%D8%B2%D8%A8%D9%87_%D9%81%D8%B1%D8%AD%D8%A7%D8%AA-%D9%88%D8%A7%D8%AF%D9%8A_%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%86%D8%8C_Faiyum_Governorate%2C_Egypt_-_panoramio.jpg/800px-%D8%B9%D8%B2%D8%A8%D9%87_%D9%81%D8%B1%D8%AD%D8%A7%D8%AA-%D9%88%D8%A7%D8%AF%D9%8A_%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%86%D8%8C_Faiyum_Governorate%2C_Egypt_-_panoramio.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Aare_-_Brugg_IMG_6745.jpg/800px-Aare_-_Brugg_IMG_6745.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Beach_pier_Holbox_island_Mexico_Strand_Pier_%2820179671845%29.jpg/800px-Beach_pier_Holbox_island_Mexico_Strand_Pier_%2820179671845%29.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Nationalparc_Sian_Ka%C2%B4an_Tulum_%2821201025028%29.jpg/800px-Nationalparc_Sian_Ka%C2%B4an_Tulum_%2821201025028%29.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Pleasing_Fungus_Beetle_%2814379850456%29.jpg/800px-Pleasing_Fungus_Beetle_%2814379850456%29.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/b/b9/Culebra_Ciega_-_panoramio.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Planten_un_Blomen_im_Fr%C3%BChling.jpg/800px-Planten_un_Blomen_im_Fr%C3%BChling.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Bloody-nosed_beetle_-_Tatzenk%C3%A4fer_%28Chrysomelidae_Trimarcha_tenebricosa%29_%286979054918%29.jpg/800px-Bloody-nosed_beetle_-_Tatzenk%C3%A4fer_%28Chrysomelidae_Trimarcha_tenebricosa%29_%286979054918%29.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Squirrel_detail_Peacocks_Met_27.250.1.jpg/800px-Squirrel_detail_Peacocks_Met_27.250.1.jpg"
-      ];
-      randomImgNum = Math.floor(Math.random() * imageArr.length);
+function randomImgGenerator() {
+  imageArr = [
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Raigad_Fort_%28nature%29.jpg/800px-Raigad_Fort_%28nature%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Czo%C5%82o_Turbacza.jpg/800px-Czo%C5%82o_Turbacza.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/c/c6/BBGJapaneseHillPondGarden.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/2012-04-27_07-19-41-nature.jpg/800px-2012-04-27_07-19-41-nature.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/KHARKHARA_DAM_WATERFALL_01.jpg/800px-KHARKHARA_DAM_WATERFALL_01.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Iguana_de_Venezuela.jpg/800px-Iguana_de_Venezuela.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Australia_July_2008_%282687557669%29.jpg/800px-Australia_July_2008_%282687557669%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/0/0f/Natural-heritage-bhutan.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Cachoeira_no_Rio_Sucuri%C3%BA_-_Costa_Rica-MS_02.jpg/800px-Cachoeira_no_Rio_Sucuri%C3%BA_-_Costa_Rica-MS_02.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Crete_Senesi_Sunset_-_Saltafabbro%2C_Asciano%2C_Siena%2C_Italy_-_July_4%2C_2010_02.jpg/800px-Crete_Senesi_Sunset_-_Saltafabbro%2C_Asciano%2C_Siena%2C_Italy_-_July_4%2C_2010_02.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/8/89/Moneglia_%28GE%29%2C_Italy.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/%D8%B9%D8%B2%D8%A8%D9%87_%D9%81%D8%B1%D8%AD%D8%A7%D8%AA-%D9%88%D8%A7%D8%AF%D9%8A_%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%86%D8%8C_Faiyum_Governorate%2C_Egypt_-_panoramio.jpg/800px-%D8%B9%D8%B2%D8%A8%D9%87_%D9%81%D8%B1%D8%AD%D8%A7%D8%AA-%D9%88%D8%A7%D8%AF%D9%8A_%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%86%D8%8C_Faiyum_Governorate%2C_Egypt_-_panoramio.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Aare_-_Brugg_IMG_6745.jpg/800px-Aare_-_Brugg_IMG_6745.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Beach_pier_Holbox_island_Mexico_Strand_Pier_%2820179671845%29.jpg/800px-Beach_pier_Holbox_island_Mexico_Strand_Pier_%2820179671845%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Nationalparc_Sian_Ka%C2%B4an_Tulum_%2821201025028%29.jpg/800px-Nationalparc_Sian_Ka%C2%B4an_Tulum_%2821201025028%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Pleasing_Fungus_Beetle_%2814379850456%29.jpg/800px-Pleasing_Fungus_Beetle_%2814379850456%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/b/b9/Culebra_Ciega_-_panoramio.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Planten_un_Blomen_im_Fr%C3%BChling.jpg/800px-Planten_un_Blomen_im_Fr%C3%BChling.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Bloody-nosed_beetle_-_Tatzenk%C3%A4fer_%28Chrysomelidae_Trimarcha_tenebricosa%29_%286979054918%29.jpg/800px-Bloody-nosed_beetle_-_Tatzenk%C3%A4fer_%28Chrysomelidae_Trimarcha_tenebricosa%29_%286979054918%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Squirrel_detail_Peacocks_Met_27.250.1.jpg/800px-Squirrel_detail_Peacocks_Met_27.250.1.jpg"
+  ];
+  randomImgNum = Math.floor(Math.random() * imageArr.length);
+}
+
+function instructions() {
+  if (firstLoad === true) {
+    let ctx = document.getElementById("original-img").getContext("2d");
+    ctx.font = "22px Helvetica";
+
+    ctx.textAlign = "center";
+    ctx.fillText("Welcome to Tile Slide.", 399, 50);
+    ctx.textAlign = "center";
+    ctx.fillText("Choose your desired difficulty.", 399, 100);
+    ctx.textAlign = "center";
+    ctx.fillText('Click "Start" to shuffle the board and begin.', 399, 150);
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "Use the arrows keys to swap the colored tile with the adjacent tiles.",
+      399,
+      200
+    );
+    ctx.textAlign = "center";
+    ctx.fillText(
+      'You will need to "Think Outside of the Box" to win.',
+      399,
+      250
+    );
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "Seriously though, you can't win without moving the tile out of the grid.",
+      399,
+      300
+    );
+    ctx.textAlign = "center";
+    ctx.fillText("Like it's probably impossible to win without it.", 399, 350);
+    ctx.textAlign = "center";
+    ctx.fillText(
+      'Use "Show Original/Continue" to swap between the original and shuffled image.',
+      399,
+      400
+    );
+    ctx.textAlign = "center";
+    ctx.fillText(
+      '"Restart Game" will restart the game with a new image.',
+      399,
+      450
+    );
+    ctx.textAlign = "center";
+    ctx.fillText("When the time expires you've lost the game.", 399, 500);
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "Don't overestimate your abilities. This game can get pretty damn hard...",
+      399,
+      550
+    );
+    ctx.strokeStyle = "#ad343e";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(152, 180, 122, 26);
+
+    firstLoad = false;
+  }
 }
