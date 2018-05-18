@@ -1,6 +1,5 @@
 let difficulty; //number of tiles per axis, hard coded for now, will ultimately be determined by user selection
 let myImage;
-let imageArr = ["http://gdargaud.net/Photo/800/20051224_0255_MtCookRoad.jpg"];
 let randomImgNum = 0;
 let tileWidth;
 let tileHeight;
@@ -8,99 +7,100 @@ let tilesArr = []; //array of objects containing position of x and position of y
 let shuffledArr = [];
 let selectedTile;
 let moves = -100;
+let gridImage;
+let shuffledImg;
+let shuffleButton;
+let imageArr;
 
 window.onload = function() {
-  document.getElementById("easy").onclick = function() {
-    tilesArr = [];
-    shuffledArr = [];
-    difficulty = 3;
-    selectedTile = difficulty * difficulty - 1;
-    createImg();
+  gridImage = document.getElementById("original-img");
+  shuffledImg = document.getElementById("play-area");
+  shuffleButton = document.getElementById("start");
+  randomImgGenerator();
+
+  document.onkeydown = function(e) {
+    if (gridImage.style.display === "none") {
+      executeMove(e.keyCode);
+    }
   };
-  document.getElementById("med").onclick = function() {
-    tilesArr = [];
-    shuffledArr = [];
-    difficulty = 4;
-    selectedTile = difficulty * difficulty - 1;
+
+  document.getElementById("normal").onclick = function() {
+    difficulty = 3;
+    resetGame();
     createImg();
   };
   document.getElementById("hard").onclick = function() {
-    tilesArr = [];
-    shuffledArr = [];
-    difficulty = 5;
-    selectedTile = difficulty * difficulty - 1;
+    difficulty = 4;
+    resetGame();
     createImg();
   };
+  document.getElementById("insane").onclick = function() {
+    difficulty = 5;
+    resetGame();
+    createImg();
+  };
+  document.getElementById("start").onclick = function() {
+    toggleCanvas();
+  };
 };
-
-document.onkeydown = function(e) {
-  executeMove(e.keyCode);
-  //   shuffleButton(e.keyCode);
-};
-
-function shuffleButton(keyCode) {
-  if (keyCode === 32) {
-    shuffleMove();
-  }
-}
 
 function executeMove(keyCode) {
   if (keyCode === 37 || keyCode === 39 || keyCode === 38 || keyCode === 40) {
     countMoves();
   }
-
-  if (keyCode === 37) {
-    //left 37
-    if (selectedTile % difficulty === 0) {
-      swapArr(shuffledArr, selectedTile, selectedTile + (difficulty - 1));
-      selectedTile = selectedTile + (difficulty - 1);
-      drawGameCanvas();
-    } else {
-      swapArr(shuffledArr, selectedTile, selectedTile - 1); //calling the function that swaps the index of the selected tile
-      selectedTile = selectedTile - 1;
-      drawGameCanvas();
-    }
-  } else if (keyCode === 39) {
-    //right 39
-    if ((selectedTile + 1) % difficulty === 0) {
-      swapArr(shuffledArr, selectedTile, selectedTile - (difficulty - 1));
-      selectedTile = selectedTile - (difficulty - 1);
-      drawGameCanvas();
-    } else {
-      swapArr(shuffledArr, selectedTile, selectedTile + 1); //calling the function that swaps the index of the selected tile
-      selectedTile = selectedTile + 1;
-      drawGameCanvas();
-    }
-  } else if (keyCode === 38) {
-    //up 38
-    if (selectedTile - difficulty < 0) {
-      swapArr(
-        shuffledArr,
-        selectedTile,
-        selectedTile + difficulty * (difficulty - 1)
-      );
-      selectedTile = selectedTile + difficulty * (difficulty - 1);
-      drawGameCanvas();
-    } else {
-      swapArr(shuffledArr, selectedTile, selectedTile - difficulty); //calling the function that swaps the index of the selected tile
-      selectedTile = selectedTile - difficulty;
-      drawGameCanvas();
-    }
-  } else if (keyCode === 40) {
-    //down 40
-    if (selectedTile + difficulty >= difficulty * difficulty) {
-      swapArr(
-        shuffledArr,
-        selectedTile,
-        selectedTile - difficulty * (difficulty - 1)
-      );
-      selectedTile = selectedTile - difficulty * (difficulty - 1);
-      drawGameCanvas();
-    } else {
-      swapArr(shuffledArr, selectedTile, selectedTile + difficulty); //calling the function that swaps the index of the selected tile
-      selectedTile = selectedTile + difficulty;
-      drawGameCanvas();
-    }
+  switch (keyCode) {
+    case 37:
+      if (selectedTile % difficulty === 0) {
+        swapArr(shuffledArr, selectedTile, selectedTile + (difficulty - 1));
+        selectedTile = selectedTile + (difficulty - 1);
+        drawGameCanvas();
+      } else {
+        swapArr(shuffledArr, selectedTile, selectedTile - 1); //calling the function that swaps the index of the selected tile
+        selectedTile = selectedTile - 1;
+        drawGameCanvas();
+      }
+      break;
+    case 39:
+      if ((selectedTile + 1) % difficulty === 0) {
+        swapArr(shuffledArr, selectedTile, selectedTile - (difficulty - 1));
+        selectedTile = selectedTile - (difficulty - 1);
+        drawGameCanvas();
+      } else {
+        swapArr(shuffledArr, selectedTile, selectedTile + 1); //calling the function that swaps the index of the selected tile
+        selectedTile = selectedTile + 1;
+        drawGameCanvas();
+      }
+      break;
+    case 38:
+      if (selectedTile - difficulty < 0) {
+        swapArr(
+          shuffledArr,
+          selectedTile,
+          selectedTile + difficulty * (difficulty - 1)
+        );
+        selectedTile = selectedTile + difficulty * (difficulty - 1);
+        drawGameCanvas();
+      } else {
+        swapArr(shuffledArr, selectedTile, selectedTile - difficulty); //calling the function that swaps the index of the selected tile
+        selectedTile = selectedTile - difficulty;
+        drawGameCanvas();
+      }
+      break;
+    case 40:
+      if (selectedTile + difficulty >= difficulty * difficulty) {
+        swapArr(
+          shuffledArr,
+          selectedTile,
+          selectedTile - difficulty * (difficulty - 1)
+        );
+        selectedTile = selectedTile - difficulty * (difficulty - 1);
+        drawGameCanvas();
+      } else {
+        swapArr(shuffledArr, selectedTile, selectedTile + difficulty); //calling the function that swaps the index of the selected tile
+        selectedTile = selectedTile + difficulty;
+        drawGameCanvas();
+      }
+      break;
   }
 }
 
@@ -119,10 +119,12 @@ function createImg() {
 }
 
 function drawCanvas() {
-  let canvas = document.getElementById("game-area");
+  let canvas = document.getElementById("original-img");
   let ctx = canvas.getContext("2d");
   let currentX = 0;
   let currentY = 0;
+  let whiteX = tileWidth * (difficulty - 1);
+  let whiteY = tileHeight * (difficulty - 1);
 
   //this for loop is drawing the tiles on the y axis
   for (i = 0; i < difficulty; i++) {
@@ -174,6 +176,13 @@ function drawCanvas() {
     }
   }
   //shuffledArr = shuffle(shuffledArr);
+
+  ctx.beginPath();
+  ctx.rect(whiteX, whiteY, tileWidth, tileHeight);
+  ctx.fillStyle = "#e0e0ce";
+  ctx.fill();
+  ctx.strokeRect(whiteX, whiteY, tileWidth, tileHeight);
+
   shuffleMove();
   // console.log(tilesArr); //for testing
 }
@@ -209,7 +218,7 @@ function drawGameCanvas() {
     tileWidth,
     tileHeight
   );
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "#e0e0ce";
   ctx.fill();
   ctx.strokeRect(
     tilesArr[selectedTile].positionX,
@@ -217,7 +226,7 @@ function drawGameCanvas() {
     tileWidth,
     tileHeight
   );
-  if (checkWinTest() === true) {
+  if (checkWinTest() === true && moves > 0) {
     console.log("you win");
   }
   // console.log(shuffledArr); //for testing
@@ -257,12 +266,63 @@ function checkWinTest() {
 }
 
 function countMoves() {
-    x = document.getElementById("moves");
-    moves++;
-    x.innerText = moves;
-    console.log(moves);
+  x = document.getElementById("moves");
+  moves++;
+  x.innerText = moves;
+  //   console.log(moves);
 }
 
-function resetGame(){
+function resetGame() {
+  moves = -100;
+  tilesArr = [];
+  shuffledArr = [];
+  selectedTile = difficulty * difficulty - 1;
+}
 
+function toggleCanvas() {
+  if (gridImage.style.display === "none") {
+    gridImage.style.display = "inline";
+    shuffledImg.style.display = "none";
+    shuffleButton.value = "Continue";
+  } else {
+    gridImage.style.display = "none";
+    shuffledImg.style.display = "inline";
+    shuffleButton.value = "Show Original";
+  }
+}
+
+// function toggleBtn(){
+//     if (document.getElementById("mode").style.display ==="block"){
+//         document.getElementById("start").style.display = "none";
+//     }
+//     else{
+//         document.getElementById("start").style.display = "inline";
+//         document.getElementById("mode").style.display ="none";
+//     } 
+// }
+
+function randomImgGenerator(){
+    imageArr = [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Raigad_Fort_%28nature%29.jpg/800px-Raigad_Fort_%28nature%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Czo%C5%82o_Turbacza.jpg/800px-Czo%C5%82o_Turbacza.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/c/c6/BBGJapaneseHillPondGarden.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/2012-04-27_07-19-41-nature.jpg/800px-2012-04-27_07-19-41-nature.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/KHARKHARA_DAM_WATERFALL_01.jpg/800px-KHARKHARA_DAM_WATERFALL_01.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Iguana_de_Venezuela.jpg/800px-Iguana_de_Venezuela.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Australia_July_2008_%282687557669%29.jpg/800px-Australia_July_2008_%282687557669%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/0/0f/Natural-heritage-bhutan.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Cachoeira_no_Rio_Sucuri%C3%BA_-_Costa_Rica-MS_02.jpg/800px-Cachoeira_no_Rio_Sucuri%C3%BA_-_Costa_Rica-MS_02.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Crete_Senesi_Sunset_-_Saltafabbro%2C_Asciano%2C_Siena%2C_Italy_-_July_4%2C_2010_02.jpg/800px-Crete_Senesi_Sunset_-_Saltafabbro%2C_Asciano%2C_Siena%2C_Italy_-_July_4%2C_2010_02.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/8/89/Moneglia_%28GE%29%2C_Italy.JPG",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/%D8%B9%D8%B2%D8%A8%D9%87_%D9%81%D8%B1%D8%AD%D8%A7%D8%AA-%D9%88%D8%A7%D8%AF%D9%8A_%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%86%D8%8C_Faiyum_Governorate%2C_Egypt_-_panoramio.jpg/800px-%D8%B9%D8%B2%D8%A8%D9%87_%D9%81%D8%B1%D8%AD%D8%A7%D8%AA-%D9%88%D8%A7%D8%AF%D9%8A_%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%86%D8%8C_Faiyum_Governorate%2C_Egypt_-_panoramio.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Aare_-_Brugg_IMG_6745.jpg/800px-Aare_-_Brugg_IMG_6745.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Beach_pier_Holbox_island_Mexico_Strand_Pier_%2820179671845%29.jpg/800px-Beach_pier_Holbox_island_Mexico_Strand_Pier_%2820179671845%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Nationalparc_Sian_Ka%C2%B4an_Tulum_%2821201025028%29.jpg/800px-Nationalparc_Sian_Ka%C2%B4an_Tulum_%2821201025028%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Pleasing_Fungus_Beetle_%2814379850456%29.jpg/800px-Pleasing_Fungus_Beetle_%2814379850456%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/b/b9/Culebra_Ciega_-_panoramio.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Planten_un_Blomen_im_Fr%C3%BChling.jpg/800px-Planten_un_Blomen_im_Fr%C3%BChling.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Bloody-nosed_beetle_-_Tatzenk%C3%A4fer_%28Chrysomelidae_Trimarcha_tenebricosa%29_%286979054918%29.jpg/800px-Bloody-nosed_beetle_-_Tatzenk%C3%A4fer_%28Chrysomelidae_Trimarcha_tenebricosa%29_%286979054918%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Squirrel_detail_Peacocks_Met_27.250.1.jpg/800px-Squirrel_detail_Peacocks_Met_27.250.1.jpg"
+      ];
+      randomImgNum = Math.floor(Math.random() * imageArr.length);
 }
