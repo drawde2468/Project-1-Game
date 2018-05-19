@@ -39,9 +39,23 @@
         <div>
             <canvas id="play-area" width="798" height="600"></canvas>
         </div>
-        <div>
+        <div id="overlay"></div>
 
+        <div id="popup">
+            <div id="win">
+                <h1>Nice job!</h1>
+                <p>You solved the puzzle in <span id="end-time"></span> with <span id="end-moves"></span> moves.</p>
+                <p>Consider playing again at a harder difficulty for more of a challenge! </p>
+                <input class="btn" id="winBtn" type="button" value="Play Again?">
+            </div>
+            <div id="lose">
+                <h1>Time's up!</h1>
+                <p>Don't give up yet!</p>
+                <p>Try your luck again.</p>
+                <input class="btn" id="loseBtn" type="button" value="Play Again?">
+            </div>
         </div>
+
     </div>
 </body>
 

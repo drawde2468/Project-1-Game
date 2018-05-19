@@ -46,12 +46,34 @@ window.onload = function() {
     toggleCanvas();
   };
   document.getElementById("reset").onclick = function() {
-    shuffleButton.value = "Start";
-    gridImage.style.display = "inline";
-    shuffledImg.style.display = "none";
-    window.onload();
+    playAgain();
+  };
+  document.getElementById("winBtn").onclick = function() {
+    playAgain();
+    togglePopUp();
+  };
+  document.getElementById("loseBtn").onclick = function() {
+    playAgain();
+    togglePopUp();
   };
 };
+
+function playAgain() {
+  shuffleButton.value = "Start";
+  gridImage.style.display = "inline";
+  shuffledImg.style.display = "none";
+  window.onload();
+}
+
+function togglePopUp() {
+  if (document.getElementById("overlay").style.display === "block") {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("popup").style.display = "none";
+  } else {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("popup").style.display = "block";
+  }
+}
 
 function executeMove(keyCode) {
   if (keyCode === 37 || keyCode === 39 || keyCode === 38 || keyCode === 40) {
@@ -128,6 +150,8 @@ function createImg() {
 }
 
 function drawCanvas() {
+  document.getElementById("original-img").style.border = "#000000 5px solid";
+
   let canvas = document.getElementById("original-img");
   let ctx = canvas.getContext("2d");
   let currentX = 0;
@@ -197,6 +221,8 @@ function drawCanvas() {
 }
 
 function drawGameCanvas() {
+  document.getElementById("play-area").style.border = "#000000 5px solid";
+
   let canvas = document.getElementById("play-area");
   let ctx = canvas.getContext("2d");
 
@@ -236,7 +262,11 @@ function drawGameCanvas() {
     tileHeight
   );
   if (checkWinTest() === true && moves > 0) {
-    console.log("you win");
+    document.getElementById("win").style.display = "block";
+    document.getElementById("lose").style.display = "none";
+    setTimeout(function() {
+      togglePopUp();
+    }, 750);
   }
   // console.log(shuffledArr); //for testing
 }
@@ -347,50 +377,27 @@ function instructions() {
     ctx.textAlign = "center";
     ctx.fillText("Choose your desired difficulty.", 399, 100);
     ctx.textAlign = "center";
-    ctx.fillText('Click "Start" to shuffle the board and begin.', 399, 150);
-    ctx.textAlign = "center";
     ctx.fillText(
       "Use the arrows keys to swap the colored tile with the adjacent tiles.",
+      399,
+      150
+    );
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "You will need to move the tile outside of the grid to win.",
       399,
       200
     );
     ctx.textAlign = "center";
     ctx.fillText(
-      'You will need to "Think Outside of the Box" to win.',
+      'Use "Show Original/Continue" to swap between the original and shuffled image.',
       399,
       250
     );
     ctx.textAlign = "center";
-    ctx.fillText(
-      "Seriously though, you can't win without moving the tile out of the grid.",
-      399,
-      300
-    );
+    ctx.fillText("If the time expires you've lost the game.", 399, 300);
     ctx.textAlign = "center";
-    ctx.fillText("Like it's probably impossible to win without it.", 399, 350);
-    ctx.textAlign = "center";
-    ctx.fillText(
-      'Use "Show Original/Continue" to swap between the original and shuffled image.',
-      399,
-      400
-    );
-    ctx.textAlign = "center";
-    ctx.fillText(
-      '"Restart Game" will restart the game with a new image.',
-      399,
-      450
-    );
-    ctx.textAlign = "center";
-    ctx.fillText("When the time expires you've lost the game.", 399, 500);
-    ctx.textAlign = "center";
-    ctx.fillText(
-      "Don't overestimate your abilities. This game can get pretty damn hard...",
-      399,
-      550
-    );
-    ctx.strokeStyle = "#ad343e";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(152, 180, 122, 26);
+    ctx.fillText("Good luck!", 399, 350);
 
     firstLoad = false;
   }
