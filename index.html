@@ -16,9 +16,10 @@
             <h1>Tile Slide</h1>
         </div>
         <div>
-            <p>Time:
+            <p>Time Remaining:
                 <span id="time">0</span>
-                Moves:
+            </p>
+            <p>Moves:
                 <span id="moves">0</span>
             </p>
         </div>
@@ -29,7 +30,7 @@
         </div>
         <div id="in-game-btn">
             <input class="btn" id="start" type="button" value="Start">
-            <input class="btn" id="reset" type="button" value="Restart Game">
+            <input class="btn" id="reset" type="button" value="New Game">
 
         </div>
         <div>
@@ -44,8 +45,10 @@
         <div id="popup">
             <div id="win">
                 <h1>Nice job!</h1>
-                <p>You solved the puzzle in <span id="end-time"></span> with <span id="end-moves"></span> moves.</p>
-                <p>Consider playing again at a harder difficulty for more of a challenge! </p>
+                <p>You solved the puzzle in
+                    <span id="end-time"></span> with
+                    <span id="end-moves"></span> moves.</p>
+                <p>Choose a harder difficulty for a greater challenge! </p>
                 <input class="btn" id="winBtn" type="button" value="Play Again?">
             </div>
             <div id="lose">

@@ -22,7 +22,7 @@ window.onload = function() {
   showHideBtn();
 
   document.onkeydown = function(e) {
-    if (gridImage.style.display === "none") {
+    if (gridImage.style.display === "none" || e.keyCode === 32) {
       executeMove(e.keyCode);
     }
   };
@@ -58,6 +58,7 @@ window.onload = function() {
   };
 };
 
+
 function playAgain() {
   shuffleButton.value = "Start";
   gridImage.style.display = "inline";
@@ -80,6 +81,10 @@ function executeMove(keyCode) {
     countMoves();
   }
   switch (keyCode) {
+    case 32:
+      console.log(keyCode);
+      toggleCanvas();
+      break;
     case 37:
       if (selectedTile % difficulty === 0) {
         swapArr(shuffledArr, selectedTile, selectedTile + (difficulty - 1));
@@ -317,6 +322,7 @@ function resetGame() {
   shuffledArr = [];
   selectedTile = difficulty * difficulty - 1;
   showHideBtn();
+  shuffleButton.style.display = "inline-block";
 }
 
 function toggleCanvas() {
@@ -402,3 +408,26 @@ function instructions() {
     firstLoad = false;
   }
 }
+
+
+
+
+
+// let ticker = 180;
+// let secShown;
+// let minShown;
+
+// let myVar = setInterval(myticker, 1000);
+
+// function myticker(){
+//   ticker--;
+//   minShown = Math.floor(ticker/60);
+//   secShown = (minShown * 60)
+//   if (ticker >= 60){
+//     secShown = ticker - (minShown * 60);
+//   }
+//   else{
+//     secShown = ticker;
+//   }
+//   console.log(minShown, ':' ,secShown);
+// }
