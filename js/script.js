@@ -12,8 +12,14 @@ let shuffledImg;
 let shuffleButton;
 let imageArr;
 let firstLoad = true;
+let ticker;
+let timer;
+let secShown;
+let minShown;
+let domTime = document.getElementById("time");
 
-window.onload = function() {
+window.onload = function () {
+  timeDisplay(0,0);
   gridImage = document.getElementById("original-img");
   shuffledImg = document.getElementById("play-area");
   shuffleButton = document.getElementById("start");
@@ -21,38 +27,44 @@ window.onload = function() {
   randomImgGenerator();
   showHideBtn();
 
-  document.onkeydown = function(e) {
+  document.onkeyup = function (e) {
     if (gridImage.style.display === "none" || e.keyCode === 32) {
       executeMove(e.keyCode);
     }
   };
 
-  document.getElementById("normal").onclick = function() {
+  document.getElementById("normal").onclick = function () {
     difficulty = 3;
     resetGame();
     createImg();
+    ticker = 60 * 3;
   };
-  document.getElementById("hard").onclick = function() {
+  document.getElementById("hard").onclick = function () {
     difficulty = 4;
     resetGame();
     createImg();
+    ticker = 60 * 12;
   };
-  document.getElementById("insane").onclick = function() {
+  document.getElementById("insane").onclick = function () {
     difficulty = 5;
     resetGame();
     createImg();
+    ticker = 60 * 25;
   };
-  document.getElementById("start").onclick = function() {
+  document.getElementById("start").onclick = function () {
     toggleCanvas();
+    runTheClock();
   };
-  document.getElementById("reset").onclick = function() {
+  document.getElementById("reset").onclick = function () {
+    timeDisplay(0,0);
+    stopTimer();
     playAgain();
   };
-  document.getElementById("winBtn").onclick = function() {
+  document.getElementById("winBtn").onclick = function () {
     playAgain();
     togglePopUp();
   };
-  document.getElementById("loseBtn").onclick = function() {
+  document.getElementById("loseBtn").onclick = function () {
     playAgain();
     togglePopUp();
   };
@@ -81,10 +93,10 @@ function executeMove(keyCode) {
     countMoves();
   }
   switch (keyCode) {
-    case 32:
-      console.log(keyCode);
-      toggleCanvas();
-      break;
+    // case 32:
+    //   console.log(keyCode);
+    //   toggleCanvas();
+    //   break;
     case 37:
       if (selectedTile % difficulty === 0) {
         swapArr(shuffledArr, selectedTile, selectedTile + (difficulty - 1));
@@ -143,7 +155,7 @@ function executeMove(keyCode) {
 function createImg() {
   myImage = new Image();
   myImage.src = imageArr[randomImgNum]; //will create an array of image src to select at random in future
-  myImage.onload = function() {
+  myImage.onload = function () {
     //setting the size of the tile by dividing the width or height by the total number of tiles in that axis.
     tileWidth = Math.floor(myImage.width / difficulty);
     tileHeight = Math.floor(myImage.height / difficulty);
@@ -269,7 +281,7 @@ function drawGameCanvas() {
   if (checkWinTest() === true && moves > 0) {
     document.getElementById("win").style.display = "block";
     document.getElementById("lose").style.display = "none";
-    setTimeout(function() {
+    setTimeout(function () {
       togglePopUp();
     }, 750);
   }
@@ -409,25 +421,49 @@ function instructions() {
   }
 }
 
+function timeUp() {
+  document.getElementById("lose").style.display = "block";
+  document.getElementById("win").style.display = "none";
+  setTimeout(function () {
+    togglePopUp();
+  }, 750);
+}
 
 
+function runTheClock() {
+    timer = setInterval(myticker, 1000);
+}
 
+function myticker() {
+  let secShown;
+  let minShown;
+  ticker--;
+  minShown = Math.floor(ticker / 60);
+  secShown = (minShown * 60)
+  if (ticker >= 60) {
+    secShown = ticker - (minShown * 60);
+  } else {
+    secShown = ticker;
+  }
+  timeDisplay(minShown, secShown);
+  if (ticker === 0) {
+    timeUp();
+    stopTimer();
+  }
+}
 
-// let ticker = 180;
-// let secShown;
-// let minShown;
+function stopTimer(){
+  clearInterval(timer);
+}
 
-// let myVar = setInterval(myticker, 1000);
-
-// function myticker(){
-//   ticker--;
-//   minShown = Math.floor(ticker/60);
-//   secShown = (minShown * 60)
-//   if (ticker >= 60){
-//     secShown = ticker - (minShown * 60);
-//   }
-//   else{
-//     secShown = ticker;
-//   }
-//   console.log(minShown, ':' ,secShown);
-// }
+function timeDisplay(min, sec) {
+  min = min.toString();
+  sec = sec.toString();
+  if (min.length < 2) {
+    min = "0" + min;
+  }
+  if (sec.length < 2) {
+    sec = "0" + sec;
+  }
+  time.innerText = min + ":" + sec;
+}
