@@ -16,10 +16,10 @@ let ticker;
 let timer;
 let secShown;
 let minShown;
-let domTime = document.getElementById("time");
+let timeElapsed = 0;
 
 window.onload = function () {
-  timeDisplay(0,0);
+  document.getElementById("time").innerText = timeDisplay(0, 0);
   gridImage = document.getElementById("original-img");
   shuffledImg = document.getElementById("play-area");
   shuffleButton = document.getElementById("start");
@@ -27,8 +27,8 @@ window.onload = function () {
   randomImgGenerator();
   showHideBtn();
 
-  document.onkeyup = function (e) {
-    if (gridImage.style.display === "none" || e.keyCode === 32) {
+  document.onkeydown = function (e) {
+    if (gridImage.style.display === "none" && document.getElementById("popup").style.display !== "block") {
       executeMove(e.keyCode);
     }
   };
@@ -37,26 +37,28 @@ window.onload = function () {
     difficulty = 3;
     resetGame();
     createImg();
-    ticker = 60 * 3;
+    ticker = 60 * 5;
   };
   document.getElementById("hard").onclick = function () {
     difficulty = 4;
     resetGame();
     createImg();
-    ticker = 60 * 12;
+    ticker = 60 * 15;
   };
   document.getElementById("insane").onclick = function () {
     difficulty = 5;
     resetGame();
     createImg();
-    ticker = 60 * 25;
+    ticker = 60 * 30;
   };
   document.getElementById("start").onclick = function () {
+    if (shuffleButton.value === "Start") {
+      runTheClock();
+    }
     toggleCanvas();
-    runTheClock();
   };
   document.getElementById("reset").onclick = function () {
-    timeDisplay(0,0);
+    document.getElementById("time").innerText = timeDisplay(0, 0);
     stopTimer();
     playAgain();
   };
@@ -70,88 +72,6 @@ window.onload = function () {
   };
 };
 
-
-function playAgain() {
-  shuffleButton.value = "Start";
-  gridImage.style.display = "inline";
-  shuffledImg.style.display = "none";
-  window.onload();
-}
-
-function togglePopUp() {
-  if (document.getElementById("overlay").style.display === "block") {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("popup").style.display = "none";
-  } else {
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("popup").style.display = "block";
-  }
-}
-
-function executeMove(keyCode) {
-  if (keyCode === 37 || keyCode === 39 || keyCode === 38 || keyCode === 40) {
-    countMoves();
-  }
-  switch (keyCode) {
-    // case 32:
-    //   console.log(keyCode);
-    //   toggleCanvas();
-    //   break;
-    case 37:
-      if (selectedTile % difficulty === 0) {
-        swapArr(shuffledArr, selectedTile, selectedTile + (difficulty - 1));
-        selectedTile = selectedTile + (difficulty - 1);
-        drawGameCanvas();
-      } else {
-        swapArr(shuffledArr, selectedTile, selectedTile - 1); //calling the function that swaps the index of the selected tile
-        selectedTile = selectedTile - 1;
-        drawGameCanvas();
-      }
-      break;
-    case 39:
-      if ((selectedTile + 1) % difficulty === 0) {
-        swapArr(shuffledArr, selectedTile, selectedTile - (difficulty - 1));
-        selectedTile = selectedTile - (difficulty - 1);
-        drawGameCanvas();
-      } else {
-        swapArr(shuffledArr, selectedTile, selectedTile + 1); //calling the function that swaps the index of the selected tile
-        selectedTile = selectedTile + 1;
-        drawGameCanvas();
-      }
-      break;
-    case 38:
-      if (selectedTile - difficulty < 0) {
-        swapArr(
-          shuffledArr,
-          selectedTile,
-          selectedTile + difficulty * (difficulty - 1)
-        );
-        selectedTile = selectedTile + difficulty * (difficulty - 1);
-        drawGameCanvas();
-      } else {
-        swapArr(shuffledArr, selectedTile, selectedTile - difficulty); //calling the function that swaps the index of the selected tile
-        selectedTile = selectedTile - difficulty;
-        drawGameCanvas();
-      }
-      break;
-    case 40:
-      if (selectedTile + difficulty >= difficulty * difficulty) {
-        swapArr(
-          shuffledArr,
-          selectedTile,
-          selectedTile - difficulty * (difficulty - 1)
-        );
-        selectedTile = selectedTile - difficulty * (difficulty - 1);
-        drawGameCanvas();
-      } else {
-        swapArr(shuffledArr, selectedTile, selectedTile + difficulty); //calling the function that swaps the index of the selected tile
-        selectedTile = selectedTile + difficulty;
-        drawGameCanvas();
-      }
-      break;
-  }
-}
-
 function createImg() {
   myImage = new Image();
   myImage.src = imageArr[randomImgNum]; //will create an array of image src to select at random in future
@@ -160,13 +80,13 @@ function createImg() {
     tileWidth = Math.floor(myImage.width / difficulty);
     tileHeight = Math.floor(myImage.height / difficulty);
     //calls function to draw the initial canvas
-    drawCanvas();
+    originalCanvas();
     //calls function to draw the test canvas that is created using the tilesArr.
-    drawGameCanvas();
+    shuffledCanvas();
   };
 }
 
-function drawCanvas() {
+function originalCanvas() {
   document.getElementById("original-img").style.border = "#000000 5px solid";
 
   let canvas = document.getElementById("original-img");
@@ -214,8 +134,6 @@ function drawCanvas() {
 
       //draws stroke line around tiles
       ctx.strokeRect(currentX, currentY, tileWidth, tileHeight);
-      //   console.log("CURRENT X", currentX);
-      //   console.log("CURRENT Y", currentY);
       //moving along the x axis
       currentX += tileWidth;
       //this if statement ends the increase of the x axis and moves the loop into the next y axis pos.
@@ -234,10 +152,9 @@ function drawCanvas() {
   ctx.strokeRect(whiteX, whiteY, tileWidth, tileHeight);
 
   shuffleMove();
-  // console.log(tilesArr); //for testing
 }
 
-function drawGameCanvas() {
+function shuffledCanvas() {
   document.getElementById("play-area").style.border = "#000000 5px solid";
 
   let canvas = document.getElementById("play-area");
@@ -262,7 +179,6 @@ function drawGameCanvas() {
       tileHeight
     );
   }
-  // console.log("selected tile: ", selectedTile);
   ctx.beginPath();
   ctx.rect(
     tilesArr[selectedTile].positionX,
@@ -279,14 +195,90 @@ function drawGameCanvas() {
     tileHeight
   );
   if (checkWinTest() === true && moves > 0) {
-    document.getElementById("win").style.display = "block";
-    document.getElementById("lose").style.display = "none";
-    setTimeout(function () {
-      togglePopUp();
-    }, 750);
+    victoryPopUp();
   }
-  // console.log(shuffledArr); //for testing
 }
+
+function executeMove(keyCode) {
+  if (keyCode === 37 || keyCode === 39 || keyCode === 38 || keyCode === 40) {
+    countMoves();
+    if (document.getElementById("sound-check").checked === true) {
+      document.getElementById("slideSound").play();
+    }
+  }
+  switch (keyCode) {
+    case 37:
+      moveLeft();
+      break;
+    case 39:
+      moveRight();
+      break;
+    case 38:
+      moveUp();
+      break;
+    case 40:
+      moveDown();
+      break;
+  }
+}
+
+function moveLeft() {
+  if (selectedTile % difficulty === 0) {
+    swapArr(shuffledArr, selectedTile, selectedTile + (difficulty - 1));
+    selectedTile = selectedTile + (difficulty - 1);
+    shuffledCanvas();
+  } else {
+    swapArr(shuffledArr, selectedTile, selectedTile - 1); //calling the function that swaps the index of the selected tile
+    selectedTile = selectedTile - 1;
+    shuffledCanvas();
+  }
+}
+
+function moveRight() {
+  if ((selectedTile + 1) % difficulty === 0) {
+    swapArr(shuffledArr, selectedTile, selectedTile - (difficulty - 1));
+    selectedTile = selectedTile - (difficulty - 1);
+    shuffledCanvas();
+  } else {
+    swapArr(shuffledArr, selectedTile, selectedTile + 1); //calling the function that swaps the index of the selected tile
+    selectedTile = selectedTile + 1;
+    shuffledCanvas();
+  }
+}
+
+function moveUp() {
+  if (selectedTile - difficulty < 0) {
+    swapArr(
+      shuffledArr,
+      selectedTile,
+      selectedTile + difficulty * (difficulty - 1)
+    );
+    selectedTile = selectedTile + difficulty * (difficulty - 1);
+    shuffledCanvas();
+  } else {
+    swapArr(shuffledArr, selectedTile, selectedTile - difficulty); //calling the function that swaps the index of the selected tile
+    selectedTile = selectedTile - difficulty;
+    shuffledCanvas();
+  }
+}
+
+function moveDown() {
+  if (selectedTile + difficulty >= difficulty * difficulty) {
+    swapArr(
+      shuffledArr,
+      selectedTile,
+      selectedTile - difficulty * (difficulty - 1)
+    );
+    selectedTile = selectedTile - difficulty * (difficulty - 1);
+    shuffledCanvas();
+  } else {
+    swapArr(shuffledArr, selectedTile, selectedTile + difficulty); //calling the function that swaps the index of the selected tile
+    selectedTile = selectedTile + difficulty;
+    shuffledCanvas();
+  }
+}
+
+
 
 function swapArr(arr, index1, index2) {
   let newArr = arr;
@@ -301,6 +293,36 @@ function shuffleMove() {
     x = Math.floor(Math.random() * 4) + 37;
     window.executeMove(x);
   }
+}
+
+
+function playAgain() {
+  shuffleButton.value = "Start";
+  gridImage.style.display = "inline";
+  shuffledImg.style.display = "none";
+  window.onload();
+}
+
+function togglePopUp() {
+  if (document.getElementById("overlay").style.display === "block") {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("popup").style.display = "none";
+  } else {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("popup").style.display = "block";
+  }
+}
+
+function victoryPopUp() {
+  document.getElementById("win").style.display = "block";
+  document.getElementById("lose").style.display = "none";
+  stopTimer();
+  timeCompleted();
+  document.getElementById("end-moves").innerText = moves;
+  document.getElementById("winSound").play();
+  setTimeout(function () {
+    togglePopUp();
+  }, 750);
 }
 
 function checkWinTest() {
@@ -325,7 +347,6 @@ function countMoves() {
   x = document.getElementById("moves");
   moves++;
   x.innerText = moves;
-  //   console.log(moves);
 }
 
 function resetGame() {
@@ -424,6 +445,7 @@ function instructions() {
 function timeUp() {
   document.getElementById("lose").style.display = "block";
   document.getElementById("win").style.display = "none";
+  document.getElementById("loseSound").play();
   setTimeout(function () {
     togglePopUp();
   }, 750);
@@ -431,12 +453,13 @@ function timeUp() {
 
 
 function runTheClock() {
-    timer = setInterval(myticker, 1000);
+  timer = setInterval(myticker, 1000);
 }
 
 function myticker() {
   let secShown;
   let minShown;
+  timeElapsed++;
   ticker--;
   minShown = Math.floor(ticker / 60);
   secShown = (minShown * 60)
@@ -445,14 +468,14 @@ function myticker() {
   } else {
     secShown = ticker;
   }
-  timeDisplay(minShown, secShown);
+  document.getElementById("time").innerText = timeDisplay(minShown, secShown);
   if (ticker === 0) {
     timeUp();
     stopTimer();
   }
 }
 
-function stopTimer(){
+function stopTimer() {
   clearInterval(timer);
 }
 
@@ -465,5 +488,18 @@ function timeDisplay(min, sec) {
   if (sec.length < 2) {
     sec = "0" + sec;
   }
-  time.innerText = min + ":" + sec;
+  return min + ":" + sec;
+}
+
+function timeCompleted() {
+  let secShown;
+  let minShown;
+  minShown = Math.floor(timeElapsed / 60);
+  secShown = (timeElapsed * 60)
+  if (timeElapsed >= 60) {
+    secShown = timeElapsed - (minShown * 60);
+  } else {
+    secShown = timeElapsed;
+  }
+  document.getElementById("end-time").innerText = timeDisplay(minShown, secShown);
 }

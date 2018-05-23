@@ -15,12 +15,16 @@ body {
     background: #f5c463;
 }
 
+#title{
+    margin-top: -18px
+}
+
+
 /* canvas{
     border: #000000 5px solid;
 } */
 
 .btn {
-    border-radius: 5px;
     color: #e0e0ce;
     font-size: 16px;
     background: #474747;
@@ -56,7 +60,7 @@ body {
 
 #popup{
     width: 600px;
-    height: 400px;
+    height: 350px;
     position: absolute;
     top: 160px;
     z-index: 2;
@@ -97,7 +101,7 @@ body {
 #win input{
     display: inline-block;
    margin-left: 240px;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 #lose{
@@ -114,12 +118,68 @@ body {
     display: block;
     text-align: center;
     font-size: 24px;
-    padding: px 20px;
+    padding: 10px 20px;
 }
 #lose input{
     display: inline-block;
    margin-left: 240px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
+/* test */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    top: 20px;
+  
+    
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {display:none;}
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #474747;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 15px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #ad343e;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #ad343e;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(17px);
+  }
+
+#sound-text{
+    position: relative;
+    bottom: 20px;
+    right: 4px;
+}
+  
 
