@@ -351,6 +351,7 @@ function countMoves() {
 
 function resetGame() {
   moves = -100;
+  timeElapsed = 0;
   tilesArr = [];
   shuffledArr = [];
   selectedTile = difficulty * difficulty - 1;
